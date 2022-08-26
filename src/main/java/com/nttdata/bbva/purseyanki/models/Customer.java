@@ -22,4 +22,6 @@ public class Customer {
     @NotEmpty(message = "El campo emailAddress es requerido.")
     @Email(message = "El campo emailAddress tiene un formato no válido.")
     private String emailAddress;
+    @NotEmpty(message = "El campo bankAccountNumber es requerido.")
+    private String bankAccountNumber;
 }
