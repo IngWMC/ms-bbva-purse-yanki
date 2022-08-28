@@ -6,15 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Customer {
+public class OpenAccount {
 	private String id;
-	private String fullName;
-	private String customerTypeId;
-	private String identificationDocument;
-	private String emailAddress;
+	private String customerId;
+	private Customer customer;
+	private String productId;
+	private BigDecimal amountAvailable; // Monto disponible
+	private BigDecimal creditLine; // Monto de la linea de crédito (Tarjeta de crédito)
 }
