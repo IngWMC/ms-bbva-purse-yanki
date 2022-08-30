@@ -3,6 +3,8 @@ package com.nttdata.bbva.purseyanki.repositories.impl;
 import com.nttdata.bbva.purseyanki.models.User;
 import com.nttdata.bbva.purseyanki.repositories.IUserRepository;
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ReactiveHashOperations;
 import org.springframework.data.redis.core.ReactiveRedisOperations;
@@ -12,6 +14,7 @@ import reactor.core.publisher.Mono;
 
 @Repository
 public class UserRepositoryImpl implements IUserRepository {
+    private static final Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
     private static final String KEY = "USER";
     private final ReactiveRedisOperations<String, User> redisOperations;
     private final ReactiveHashOperations<String, String, User> hashOperations;
@@ -57,15 +60,34 @@ public class UserRepositoryImpl implements IUserRepository {
     }
 
     @Override
+    public Mono<User> findByCellPhoneNumber(String cellPhoneNumber) {
+        return hashOperations.values(KEY)
+                .filter(u -> u.getCellPhoneNumber().equals(cellPhoneNumber))
+                .singleOrEmpty();
+    }
+
+    @Override
     public Mono<Boolean> existsByIdentificationDocument(String identificationDocument) {
+        logger.info("Inicio UserRepositoryImpl ::: existsByIdentificationDocument ::: " + identificationDocument);
         return this.findByIdentificationDocument(identificationDocument)
-                .hasElement();
+                .hasElement()
+                .doOnNext(exists -> logger.info("Fin UserRepositoryImpl ::: existsByIdentificationDocument ::: " + exists));
     }
 
     @Override
     public Mono<Boolean> existsByEmailAddress(String emailAddress) {
+        logger.info("Inicio UserRepositoryImpl ::: existsByEmailAddress ::: " + emailAddress);
         return this.findByEmailAddress(emailAddress)
-                .hasElement();
+                .hasElement()
+                .doOnNext(exists -> logger.info("Fin UserRepositoryImpl ::: existsByEmailAddress ::: " + exists));
+    }
+
+    @Override
+    public Mono<Boolean> existsByCellPhoneNumber(String cellPhoneNumber) {
+        logger.info("Inicio UserRepositoryImpl ::: existsByCellPhoneNumber ::: " + cellPhoneNumber);
+        return this.findByCellPhoneNumber(cellPhoneNumber)
+                .hasElement()
+                .doOnNext(exists -> logger.info("Fin UserRepositoryImpl ::: existsByCellPhoneNumber ::: " + exists));
     }
 
     @Override

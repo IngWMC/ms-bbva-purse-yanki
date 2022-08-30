@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.Email;
@@ -22,6 +23,7 @@ public class User implements Serializable {
     @NotEmpty(message = "El campo identificationDocument es requerido.")
     private String identificationDocument;
     @NotEmpty(message = "El campo cellPhoneNumber es requerido.")
+    @Length(min = 9, max = 9, message = "El campo cellPhoneNumber debe tener 9 caracteres.")
     private String cellPhoneNumber;
     @NotEmpty(message = "El campo imei es requerido.")
     private String imei;

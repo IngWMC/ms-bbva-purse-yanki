@@ -1,5 +1,7 @@
 package com.nttdata.bbva.purseyanki.controllers;
 
+import com.nttdata.bbva.purseyanki.models.Event;
+import com.nttdata.bbva.purseyanki.models.EventOperation;
 import com.nttdata.bbva.purseyanki.models.User;
 import com.nttdata.bbva.purseyanki.services.IUserService;
 import org.slf4j.Logger;
@@ -46,6 +48,13 @@ public class UserController {
         return Mono.just(new ResponseEntity<Mono<User>>(customer, HttpStatus.CREATED));
     }
 
+    @PostMapping("/operations")
+    public Mono<ResponseEntity<Mono<Event>>> insertOperation(@Valid @RequestBody EventOperation obj){
+        logger.info("Inicio CustomerController ::: insertOperation ::: " + obj);
+        Mono<Event> event = service.insertOperation(obj).doOnNext(x -> logger.info("Fin CustomerController ::: insertOperation"));
+        return Mono.just(new ResponseEntity<Mono<Event>>(event, HttpStatus.CREATED));
+    }
+
     @PutMapping
     public Mono<ResponseEntity<Mono<User>>> update(@Valid @RequestBody User obj){
         logger.info("Inicio CustomerController ::: update ::: " + obj);
@@ -54,10 +63,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<Mono<Void>>> delete(@PathVariable("id") String id) {
         logger.info("Inicio CustomerController ::: delete ::: " + id);
-        service.delete(id).doOnNext(x -> logger.info("Fin CustomerController ::: delete"));
-        return Mono.just(new ResponseEntity<Void>(HttpStatus.NO_CONTENT));
+        Mono<Void> voidMono = service.delete(id).doOnNext(x -> logger.info("Fin CustomerController ::: delete"));
+        return Mono.just(new ResponseEntity<Mono<Void>>(voidMono, HttpStatus.NO_CONTENT));
     }
 
 }
